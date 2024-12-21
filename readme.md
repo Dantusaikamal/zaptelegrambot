@@ -1,6 +1,8 @@
 # 🚀 **ZapMyJob Forwarder Bot**
 
-![Bot Image](https://github.com/Dantusaikamal/zaptelegrambot/blob/main/zap.jpg)
+<p align="center">
+  <img src="https://github.com/Dantusaikamal/zaptelegrambot/blob/main/zap.jpg" alt="Bot Image" width="300">
+</p>
 
 > **Your automated job forwarder bot!**  
 > This bot forwards messages from selected Telegram groups or channels into your own group/channel, making job hunting easier for your audience. Customize it with a footer, filters, and more!
