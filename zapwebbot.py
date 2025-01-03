@@ -12,7 +12,14 @@ load_dotenv()
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 PHONE = os.getenv("PHONE")
-DESTINATION_CHAT_ID = int(os.getenv("DESTINATION_CHAT_ID"))  # Ensure it's an integer
+DESTINATION_CHAT_ID = os.getenv("DESTINATION_CHAT_ID")  # Get as string
+try:
+    # Attempt to convert to integer if it's a numeric ID
+    DESTINATION_CHAT_ID = int(DESTINATION_CHAT_ID)
+except ValueError:
+    # Keep as string if it's a username
+    pass
+
 SOURCE_CHAT_IDS = list(map(int, os.getenv("SOURCE_CHAT_IDS", "").split(",")))  # Parse IDs dynamically
 
 # Custom footer to add to forwarded messages
