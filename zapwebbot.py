@@ -70,5 +70,6 @@ if __name__ == "__main__":
     bot_thread = threading.Thread(target=run_bot, daemon=True)
     bot_thread.start()
 
-    # Run the Flask app to bind to a port
-    app.run(host="0.0.0.0", port=5000)
+    # Use the Render-assigned port for the Flask server
+    port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT is not set
+    app.run(host="0.0.0.0", port=port)
