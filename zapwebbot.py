@@ -1,6 +1,7 @@
 from flask import Flask
 from telethon import TelegramClient, events
 from dotenv import load_dotenv
+import asyncio
 import os
 import logging
 import threading
@@ -12,15 +13,8 @@ load_dotenv()
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 PHONE = os.getenv("PHONE")
-DESTINATION_CHAT_ID = os.getenv("DESTINATION_CHAT_ID")  # Get as string
-try:
-    # Attempt to convert to integer if it's a numeric ID
-    DESTINATION_CHAT_ID = int(DESTINATION_CHAT_ID)
-except ValueError:
-    # Keep as string if it's a username
-    pass
-
-SOURCE_CHAT_IDS = list(map(int, os.getenv("SOURCE_CHAT_IDS", "").split(",")))  # Parse IDs dynamically
+DESTINATION_CHAT_ID = os.getenv("DESTINATION_CHAT_ID")  # Can be username or channel ID
+SOURCE_CHAT_IDS = list(map(int, os.getenv("SOURCE_CHAT_IDS", "").split(",")))
 
 # Custom footer to add to forwarded messages
 FOOTER = "\n\n🔗 Powered by ZapMyJob"
@@ -56,18 +50,24 @@ async def forward_message(event):
     except Exception as e:
         logger.error(f"Error while forwarding message from {event.chat_id}: {e}")
 
-def start_bot():
+async def start_bot():
     """Starts the Telegram bot."""
     try:
-        client.start(phone=PHONE)
+        await client.start(phone=PHONE)
         logger.info("Telegram bot started successfully!")
-        client.run_until_disconnected()
+        await client.run_until_disconnected()
     except Exception as e:
         logger.critical(f"Critical error in bot: {e}")
 
 if __name__ == "__main__":
-    # Run the Telegram bot in a separate thread
-    bot_thread = threading.Thread(target=start_bot, daemon=True)
+    # Run the Telegram bot in a separate thread with an asyncio loop
+    def run_bot():
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(start_bot())
+
+    # Start the bot in a separate thread
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
     bot_thread.start()
 
     # Run the Flask app to bind to a port
